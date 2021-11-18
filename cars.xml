@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cars>
+    <car license-plate="ECTO-1">
+        <modelYear>1959</modelYear>
+        <make>Cadillac</make>
+        <model>Miller-Meteor Sentinel</model>
+    </car>
+    <car license-plate="NRVOUS">
+        <make>Ferrari</make>
+        <model>250 GT California Spyder</model>
+        <modelYear>1961</modelYear>
+    </car>
+    <car license-plate="BANDIT">
+        <make>Pontiac</make>
+        <model>Trans Am</model>
+        <modelYear>1977</modelYear>
+    </car>
+    <car license-plate="OUTATIME">
+        <make>DMC</make>
+        <model>DeLorean</model>
+        <modelYear>1981</modelYear>
+    </car>
+    <car license-plate="LUV ME">
+        <make>Ferrari</make>
+        <model>308GTSi</model>
+        <modelYear>1981</modelYear>
+    </car>
+    <car license-plate="STARK 33">
+        <make>Acura</make>
+        <model>NSX</model>
+        <modelYear>2012</modelYear>
+    </car>
+</cars>
