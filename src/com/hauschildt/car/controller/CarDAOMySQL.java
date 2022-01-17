@@ -79,33 +79,118 @@ public class CarDAOMySQL implements CarDAO {
         }
     }
 
-    @Override
     public Car getCarByLicensePlate(String licensePlate) throws DataException {
         Car car = null;
+        // Use this code to look up the car from the ArrayList after it has been populated
+        verifyCarList();
+        for (Car car1 : cars) {
+            if(car1.getLicensePlate().equals(licensePlate)){
+                car = car1;
+                break;
+            }
+        }
+        // Use this code if you want to directly look the car up from a database query
+        try{
+            Connection conn = buildConnection();
+            CallableStatement callableStatement
+                    = conn.prepareCall("CALL sp_get_Car_by_License_Plate(?);");
+            callableStatement.setString(1, licensePlate);
 
+            ResultSet resultSet = callableStatement.executeQuery();
+            String make;
+            String model;
+            int modelYear;
+            if(resultSet.next()){
+                make = resultSet.getString("make");
+                model = resultSet.getString("model");
+                modelYear = resultSet.getInt("modelYear");
+                car = new Car(licensePlate, make, model, modelYear);
+            }
+            callableStatement.close();
+            conn.close();
+
+        } catch(SQLException ex){
+            throw new DataException(ex);
+        }
         return car;
     }
 
     @Override
     public List<Car> getAllCars() throws DataException {
-        List<Car> cars = null;
-
+        verifyCarList();
         return cars;
     }
 
-    @Override
     public void updateCar(Car original, Car updated) throws DataException {
+        // Verify that the original car is in the ArrayList before updating it
+        verifyCarList();
+        Car foundCar = null;
+        for (Car car : cars) {
+            if(car.equals(original)){
+                foundCar = car;
+                break;
+            }
+        }
+        if(null == foundCar){
+            throw new DataException("Original record not found for update.");
+        }
+        foundCar.setMake(updated.getMake());
+        foundCar.setModel(updated.getModel());
+        foundCar.setModelYear(updated.getModelYear());
+        // Update the car in the database
+        try{
+            Connection conn = buildConnection();
+            CallableStatement callableStatement
+                    = conn.prepareCall("CALL sp_update_Car(?,?,?,?,?);");
+            callableStatement.setString(1, original.getLicensePlate());
+            callableStatement.setString(2, updated.getLicensePlate());
+            callableStatement.setString(3, updated.getMake());
+            callableStatement.setString(4, updated.getModel());
+            callableStatement.setInt(5, updated.getModelYear());
 
+            callableStatement.execute();
+            callableStatement.close();
+            conn.close();
+
+        } catch(SQLException ex){
+            throw new DataException(ex);
+        }
     }
 
     @Override
     public void deleteCar(Car car) throws DataException {
-
+        deleteCar(car.getLicensePlate());
     }
 
     @Override
     public void deleteCar(String licensePlate) throws DataException {
+        // Verify that the car is in the ArrayList before removing it
+        verifyCarList();
+        Car foundCar = null;
+        for (Car car : cars) {
+            if(car.getLicensePlate().equals(licensePlate)){
+                foundCar = car;
+                break;
+            }
+        }
+        if(null == foundCar){
+            throw new DataException("Record not found for delete.");
+        }
+        String licensePlateToDelete = foundCar.getLicensePlate();
+        cars.remove(foundCar);
+        // Delete the car from the database
+        try{
+            Connection conn = buildConnection();
+            CallableStatement callableStatement
+                    = conn.prepareCall("CALL sp_delete_from_Car(?);");
+            callableStatement.setString(1, licensePlateToDelete);
+            callableStatement.execute();
+            callableStatement.close();
+            conn.close();
 
+        } catch(SQLException ex){
+            throw new DataException(ex);
+        }
     }
 
 }

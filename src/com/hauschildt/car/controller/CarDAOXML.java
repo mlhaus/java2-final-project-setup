@@ -124,37 +124,72 @@ public class CarDAOXML implements CarDAO {
     @Override
     public void createCarRecord(Car car) throws DataException {
         verifyCarList();
+        Car checkCar = getCarByLicensePlate(car.getLicensePlate());
+        if(null != checkCar){
+            throw new DataException("License Plates must be unique.");
+        }
         cars.add(car);
         saveToFile();
     }
 
     @Override
     public Car getCarByLicensePlate(String licensePlate) throws DataException {
+        verifyCarList();
         Car car = null;
-
+        for (Car car1 : cars) {
+            if(car1.getLicensePlate().equals(licensePlate)){
+                car = car1;
+                break;
+            }
+        }
         return car;
     }
 
     @Override
     public List<Car> getAllCars() throws DataException {
-        List<Car> cars = null;
-
+        verifyCarList();
         return cars;
     }
 
     @Override
     public void updateCar(Car original, Car updated) throws DataException {
-
+        verifyCarList();
+        Car foundCar = null;
+        for (Car car : cars) {
+            if(car.equals(original)){
+                foundCar = car;
+                break;
+            }
+        }
+        if(null == foundCar){
+            throw new DataException("Original record not found for update.");
+        }
+        foundCar.setMake(updated.getMake());
+        foundCar.setModel(updated.getModel());
+        foundCar.setModelYear(updated.getModelYear());
+        saveToFile();
     }
 
     @Override
     public void deleteCar(Car car) throws DataException {
-
+        deleteCar(car.getLicensePlate());
     }
 
     @Override
     public void deleteCar(String licensePlate) throws DataException {
-
+        verifyCarList();
+        Car foundCar = null;
+        for (Car car : cars) {
+            if(car.getLicensePlate().equals(licensePlate)){
+                foundCar = car;
+                break;
+            }
+        }
+        if(null == foundCar){
+            throw new DataException("Record record not found for delete.");
+        }
+        cars.remove(foundCar);
+        saveToFile();
     }
 
 }
