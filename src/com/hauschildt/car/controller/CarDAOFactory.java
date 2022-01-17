@@ -1,4 +1,4 @@
-package com.hauschildt;
+package com.hauschildt.car.controller;
 
 public class CarDAOFactory {
     private static final String DAO_SOURCE = "CSV";

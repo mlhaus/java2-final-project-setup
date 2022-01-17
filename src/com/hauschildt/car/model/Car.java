@@ -1,4 +1,4 @@
-package com.hauschildt;
+package com.hauschildt.car.model;
 
 import java.time.LocalDate;
 

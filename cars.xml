@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cars>
     <car license-plate="ECTO-1">
-        <modelYear>1959</modelYear>
         <make>Cadillac</make>
         <model>Miller-Meteor Sentinel</model>
+        <modelYear>1959</modelYear>
     </car>
     <car license-plate="NRVOUS">
         <make>Ferrari</make>
